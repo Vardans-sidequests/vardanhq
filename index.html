@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The War Room — MFour Operations Intelligence</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  :root {
+    --midnight: #003470;
+    --sapphire: #005CB7;
+    --mint: #22CD89;
+    --mint-dk: #16a34a;
+    --coral: #E76069;
+    --violet: #8882F4;
+    --sunset: #FF6740;
+    --mustard: #F2CF17;
+    --sky: #7fb3d9;
+    --bg: #0b1120;
+    --bg-card: #111827;
+    --bg-card-hover: #1a2332;
+    --border: rgba(255,255,255,0.06);
+    --border-accent: rgba(255,255,255,0.1);
+    --text: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-light: #64748b;
+    --green-bg: rgba(34,205,137,0.1);
+    --red-bg: rgba(231,96,105,0.1);
+    --yellow-bg: rgba(242,207,23,0.08);
+    --violet-bg: rgba(136,130,244,0.1);
+    --blue-bg: rgba(0,92,183,0.1);
+    --sunset-bg: rgba(255,103,64,0.1);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Top Nav ── */
+  .top-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(11,17,32,0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .top-nav-brand { display: flex; align-items: center; gap: 12px; }
+  .top-nav-logo {
+    width: 32px; height: 32px; background: var(--mint); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 15px; color: var(--midnight);
+  }
+  .top-nav-title { color: white; font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+  .top-nav-subtitle { color: var(--text-light); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .top-nav-live {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px; color: var(--mint); font-weight: 600;
+  }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--mint);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── Shell ── */
+  .page-shell { max-width: 1300px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 48px; text-align: center; }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.14em; color: var(--mint); margin-bottom: 16px;
+  }
+  .hero-title {
+    font-size: 42px; font-weight: 900; color: white;
+    letter-spacing: -0.035em; line-height: 1.1; margin-bottom: 16px;
+  }
+  .hero-title .em { color: var(--mint); }
+  .hero-desc { font-size: 16px; color: var(--text-muted); max-width: 680px; margin: 0 auto; }
+
+  /* ── Big Numbers ── */
+  .big-numbers {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-bottom: 48px;
+  }
+  .big-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px; text-align: center;
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .big-card:hover {
+    border-color: var(--border-accent);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .big-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .big-card.card-mint::before { background: linear-gradient(90deg, var(--mint), var(--mint-dk)); }
+  .big-card.card-sunset::before { background: linear-gradient(90deg, var(--sunset), #e85d36); }
+  .big-card.card-violet::before { background: linear-gradient(90deg, var(--violet), #6b63e0); }
+  .big-card-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--text-light); margin-bottom: 12px;
+  }
+  .big-card-value {
+    font-size: 48px; font-weight: 900; letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .big-card-value.mint { color: var(--mint); }
+  .big-card-value.sunset { color: var(--sunset); }
+  .big-card-value.violet { color: var(--violet); }
+  .big-card-sub {
+    font-size: 13px; color: var(--text-muted); margin-top: 8px; font-weight: 500;
+  }
+  .big-card-detail {
+    font-size: 11px; color: var(--text-light); margin-top: 12px;
+    padding-top: 12px; border-top: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .big-card-detail:hover { color: var(--text-muted); }
+
+  /* ── Section Headers ── */
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 24px; margin-top: 56px;
+  }
+  .section-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .section-title { font-size: 22px; font-weight: 800; color: white; letter-spacing: -0.025em; }
+
+  /* ── Before / After ── */
+  .journey-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: stretch; }
+  .journey-col {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px; position: relative;
+  }
+  .journey-col::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .journey-col.old::before { background: var(--coral); }
+  .journey-col.new::before { background: var(--mint); }
+  .journey-divider {
+    display: flex; align-items: center; justify-content: center;
+    width: 60px; font-size: 24px; color: var(--text-light);
+  }
+  .journey-header {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.12em; margin-bottom: 16px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .journey-header.old { color: var(--coral); }
+  .journey-header.new { color: var(--mint); }
+  .journey-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .journey-row:last-child { border-bottom: none; }
+  .journey-role { color: var(--text-muted); }
+  .journey-rate { font-size: 10px; color: var(--text-light); }
+  .journey-time { font-weight: 700; }
+  .journey-cost { font-weight: 700; font-size: 12px; }
+  .journey-time.red, .journey-cost.red { color: var(--coral); }
+  .journey-time.green, .journey-cost.green { color: var(--mint); }
+  .journey-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 14px; margin-top: 8px; border-top: 2px solid var(--border-accent);
+    font-size: 15px; font-weight: 800;
+  }
+  .journey-total .red { color: var(--coral); }
+  .journey-total .green { color: var(--mint); }
+  .journey-total-sub { font-size: 11px; color: var(--text-light); font-weight: 500; }
+
+  /* ── Pipeline ── */
+  .pipeline-track {
+    display: flex; align-items: center; gap: 0;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 20px;
+    overflow-x: auto;
+  }
+  .pipeline-node {
+    flex: 1; min-width: 140px;
+    text-align: center; padding: 16px 8px;
+    border-radius: var(--radius-sm);
+    position: relative;
+  }
+  .pipeline-node.agent {
+    background: var(--green-bg); border: 1px solid rgba(34,205,137,0.2);
+  }
+  .pipeline-node.human {
+    background: var(--yellow-bg); border: 1px solid rgba(242,207,23,0.2);
+  }
+  .pipeline-node.dani {
+    background: var(--violet-bg); border: 1px solid rgba(136,130,244,0.2);
+  }
+  .pipeline-arrow {
+    flex-shrink: 0; width: 36px; text-align: center;
+    font-size: 18px; color: var(--text-light);
+  }
+  .pipeline-label {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 4px;
+  }
+  .pipeline-node.agent .pipeline-label { color: var(--mint); }
+  .pipeline-node.human .pipeline-label { color: var(--mustard); }
+  .pipeline-node.dani .pipeline-label { color: var(--violet); }
+  .pipeline-name { font-size: 13px; font-weight: 700; color: white; }
+  .pipeline-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .pipeline-note {
+    font-size: 12px; color: var(--text-light); margin-top: 16px;
+    text-align: center;
+  }
+
+  /* ── Adoption Monitor ── */
+  .adoption-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .adoption-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; text-align: center;
+    position: relative;
+  }
+  .adoption-card.active {
+    border-color: var(--mint);
+    box-shadow: 0 0 20px rgba(34,205,137,0.08);
+  }
+  .adoption-card.active::after {
+    content: 'CURRENT'; position: absolute; top: 10px; right: 10px;
+    font-size: 8px; font-weight: 800; letter-spacing: 0.1em;
+    color: var(--midnight); background: var(--mint);
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .adoption-phase {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 8px;
+  }
+  .adoption-num {
+    font-size: 36px; font-weight: 900; color: white;
+    letter-spacing: -0.03em; line-height: 1;
+  }
+  .adoption-label { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+  .adoption-progress {
+    margin-top: 14px; height: 4px; background: rgba(255,255,255,0.06);
+    border-radius: 2px; overflow: hidden;
+  }
+  .adoption-progress-fill {
+    height: 100%; border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+  .adoption-progress-fill.mint { background: var(--mint); }
+  .adoption-progress-fill.sapphire { background: var(--sapphire); }
+  .adoption-progress-fill.violet { background: var(--violet); }
+  .adoption-progress-fill.sunset { background: var(--sunset); }
+  .adoption-status {
+    font-size: 10px; font-weight: 600; margin-top: 8px;
+  }
+
+  /* ── Agent Status ── */
+  .agent-status-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+    margin-top: 20px;
+  }
+  .agent-status-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .agent-status-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .agent-status-name { font-size: 13px; font-weight: 700; color: white; }
+  .agent-status-state { font-size: 11px; font-weight: 600; margin-top: 2px; }
+  .state-ready { color: var(--mint); }
+  .state-testing { color: var(--mustard); }
+  .state-building { color: var(--text-light); }
+  .agent-status-meta { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+
+  /* ── Chart ── */
+  .chart-container {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px; margin-top: 24px;
+  }
+  .chart-header {
+    display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;
+  }
+  .chart-title { font-size: 15px; font-weight: 700; color: white; }
+  .chart-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .chart-legend { display: flex; gap: 14px; }
+  .chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); font-weight: 500; }
+  .chart-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .chart-canvas-wrap { height: 260px; position: relative; }
+
+  /* ── Strategic Cards ── */
+  .strategy-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  }
+  .strategy-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .strategy-card:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+  }
+  .strategy-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; margin-bottom: 14px;
+  }
+  .strategy-title { font-size: 13px; font-weight: 700; color: white; margin-bottom: 6px; }
+  .strategy-body { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .strategy-stat {
+    margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .strategy-stat-val { font-size: 24px; font-weight: 900; letter-spacing: -0.03em; }
+  .strategy-stat-unit { font-size: 11px; color: var(--text-muted); }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: var(--text-light);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1100px) {
+    .big-numbers { grid-template-columns: repeat(3, 1fr); }
+    .strategy-grid { grid-template-columns: repeat(2, 1fr); }
+    .adoption-grid { grid-template-columns: repeat(2, 1fr); }
+    .agent-status-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .page-shell { padding: 24px 16px 60px; }
+    .hero-title { font-size: 28px; }
+    .big-numbers { grid-template-columns: 1fr; }
+    .journey-grid { grid-template-columns: 1fr; }
+    .journey-divider { width: 100%; height: 40px; }
+    .strategy-grid { grid-template-columns: 1fr; }
+    .adoption-grid { grid-template-columns: repeat(2, 1fr); }
+    .agent-status-grid { grid-template-columns: 1fr; }
+    .pipeline-track { flex-direction: column; }
+    .pipeline-arrow { transform: rotate(90deg); width: auto; height: 36px; }
+  }
+
+  /* ── Tooltip expandable detail ── */
+  .detail-expand { display: none; }
+  .detail-expand.open {
+    display: block;
+    margin-top: 10px; padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    font-size: 11px; color: var(--text-muted);
+    text-align: left;
+  }
+  .detail-expand .detail-row {
+    display: flex; justify-content: space-between;
+    padding: 3px 0;
+  }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="top-nav-brand">
+    <div class="top-nav-logo">M</div>
+    <div>
+      <div class="top-nav-title">The War Room</div>
+      <div class="top-nav-subtitle">MFour Operations Intelligence</div>
+    </div>
+  </div>
+  <div class="top-nav-live">
+    <span class="live-dot"></span> iOOH Automation &middot; May 2026
+  </div>
+</nav>
+
+<div class="page-shell">
+
+  <!-- ─── HERO ─── -->
+  <div class="hero">
+    <div class="hero-eyebrow">iOOH End-to-End Automation</div>
+    <h1 class="hero-title">From <span class="em">11+ hours</span> per project<br>to under two.</h1>
+    <p class="hero-desc">Three AI agents and DANI are replacing manual handoffs across questionnaire design, programming, QA, and report generation — collapsing cost, time, and contractor dependency.</p>
+  </div>
+
+  <!-- ─── THE BIG NUMBERS ─── -->
+  <div class="big-numbers">
+    <div class="big-card card-mint">
+      <div class="big-card-label">Per-Project Savings</div>
+      <div class="big-card-value mint">$471</div>
+      <div class="big-card-sub">$536 old &rarr; $65 new</div>
+      <div class="big-card-detail" onclick="toggleDetail('detail1')">See breakdown &darr;</div>
+      <div class="detail-expand" id="detail1">
+        <div class="detail-row"><span>Old: QRE Design (Researcher, 1 hr &times; $52)</span><span>$52</span></div>
+        <div class="detail-row"><span>Old: Programming (SP&D, 1 hr &times; $32)</span><span>$32</span></div>
+        <div class="detail-row"><span>Old: QA (Programming, 0.5 hr &times; $32)</span><span>$16</span></div>
+        <div class="detail-row"><span>Old: Report — Researcher (5 hrs &times; $52)</span><span>$260</span></div>
+        <div class="detail-row"><span>Old: Report — Contractor (8 hrs &times; $22)</span><span>$176</span></div>
+        <div class="detail-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span><strong>Old Total</strong></span><span><strong style="color:var(--coral);">$536</strong></span></div>
+        <div class="detail-row" style="margin-top:8px;"><span>New: QRE Review (15 min &times; $52)</span><span>$13</span></div>
+        <div class="detail-row"><span>New: Report Review (1 hr &times; $52)</span><span>$52</span></div>
+        <div class="detail-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span><strong>New Total</strong></span><span><strong style="color:var(--mint);">$65</strong></span></div>
+      </div>
+    </div>
+    <div class="big-card card-violet">
+      <div class="big-card-label">Annual Savings (152 projects)</div>
+      <div class="big-card-value violet">$71.6K</div>
+      <div class="big-card-sub">$471 &times; 152 iOOH projects/yr</div>
+      <div class="big-card-detail" onclick="toggleDetail('detail2')">See monthly volume &darr;</div>
+      <div class="detail-expand" id="detail2">
+        <div class="detail-row"><span>Jan</span><span>21 projects</span></div>
+        <div class="detail-row"><span>Feb</span><span>8</span></div>
+        <div class="detail-row"><span>Mar</span><span>7</span></div>
+        <div class="detail-row"><span>Apr</span><span>7</span></div>
+        <div class="detail-row"><span>May</span><span>10</span></div>
+        <div class="detail-row"><span>Jun</span><span>7</span></div>
+        <div class="detail-row"><span>Jul</span><span>9</span></div>
+        <div class="detail-row"><span>Aug</span><span>11</span></div>
+        <div class="detail-row"><span>Sep</span><span>18</span></div>
+        <div class="detail-row"><span>Oct</span><span>16</span></div>
+        <div class="detail-row"><span>Nov</span><span>17</span></div>
+        <div class="detail-row"><span>Dec</span><span>21</span></div>
+        <div class="detail-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span><strong>Total</strong></span><span><strong>152</strong></span></div>
+      </div>
+    </div>
+    <div class="big-card card-sunset">
+      <div class="big-card-label">Contractor Eliminated</div>
+      <div class="big-card-value sunset">$41K</div>
+      <div class="big-card-sub">90-day notice going out next week</div>
+      <div class="big-card-detail">Merkel/NeuIQ dependency removed</div>
+    </div>
+  </div>
+
+  <!-- ─── THE JOURNEY: BEFORE / AFTER ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--blue-bg);color:var(--sapphire);">&#8644;</div>
+    <h2 class="section-title">The Transformation</h2>
+  </div>
+
+  <div class="journey-grid">
+    <div class="journey-col old">
+      <div class="journey-header old">Old World — Per Project</div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">QRE Design</div>
+          <div class="journey-rate">Researcher @ $52/hr</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time red">1 hr</div>
+          <div class="journey-cost red">$52</div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">Survey Programming</div>
+          <div class="journey-rate">SP&D @ $32/hr</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time red">1 hr</div>
+          <div class="journey-cost red">$32</div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">Survey QA</div>
+          <div class="journey-rate">Programming @ $32/hr</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time red">30 min</div>
+          <div class="journey-cost red">$16</div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">Report Generation</div>
+          <div class="journey-rate">Researcher (5 hrs) + Contractor (8 hrs)</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time red">8–9 hrs</div>
+          <div class="journey-cost red">$436</div>
+        </div>
+      </div>
+      <div class="journey-total">
+        <div>
+          <span class="red">11+ hours</span>
+          <div class="journey-total-sub">Multiple teams, manual handoffs</div>
+        </div>
+        <span class="red">$536</span>
+      </div>
+    </div>
+
+    <div class="journey-divider">&rarr;</div>
+
+    <div class="journey-col new">
+      <div class="journey-header new">New World — Per Project</div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">QRE Design Agent</div>
+          <div class="journey-rate">Human review @ $52/hr</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time green">15 min</div>
+          <div class="journey-cost green">$13</div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">Programming Agent</div>
+          <div class="journey-rate">Automated</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time green">Auto</div>
+          <div class="journey-cost green">$0</div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">QA Agent</div>
+          <div class="journey-rate">Automated</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time green">Auto</div>
+          <div class="journey-cost green">$0</div>
+        </div>
+      </div>
+      <div class="journey-row">
+        <div>
+          <div class="journey-role">DANI Report Generation</div>
+          <div class="journey-rate">Review + story check @ $52/hr</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="journey-time green">1 hr</div>
+          <div class="journey-cost green">$52</div>
+        </div>
+      </div>
+      <div class="journey-total">
+        <div>
+          <span class="green">~1.25 hours</span>
+          <div class="journey-total-sub">Agent chain, one human touchpoint</div>
+        </div>
+        <span class="green">$65</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── THE PIPELINE ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--green-bg);color:var(--mint-dk);">&#9654;</div>
+    <h2 class="section-title">The Production Line</h2>
+  </div>
+
+  <div class="pipeline-track">
+    <div class="pipeline-node agent">
+      <div class="pipeline-label">Agent 1</div>
+      <div class="pipeline-name">QRE Design</div>
+      <div class="pipeline-time">Drafts questionnaire</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node human">
+      <div class="pipeline-label">Human-in-the-Loop</div>
+      <div class="pipeline-name">Review &amp; Sign-Off</div>
+      <div class="pipeline-time">15 min</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node agent">
+      <div class="pipeline-label">Agent 2</div>
+      <div class="pipeline-name">Survey Programming</div>
+      <div class="pipeline-time">Auto-triggered</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node agent">
+      <div class="pipeline-label">Agent 3</div>
+      <div class="pipeline-name">Survey QA</div>
+      <div class="pipeline-time">Auto-triggered</div>
+    </div>
+    <div class="pipeline-arrow">&rarr;</div>
+    <div class="pipeline-node dani">
+      <div class="pipeline-label">DANI</div>
+      <div class="pipeline-name">Report Generation</div>
+      <div class="pipeline-time">PowerPoint output</div>
+    </div>
+  </div>
+  <p class="pipeline-note">Each stage auto-triggers the next. Production teams are notified when their item is ready for review.</p>
+
+  <!-- ─── ADOPTION MONITOR ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--violet-bg);color:var(--violet);">&#9678;</div>
+    <h2 class="section-title">Adoption Monitor</h2>
+  </div>
+
+  <div class="adoption-grid">
+    <div class="adoption-card active">
+      <div class="adoption-phase">Phase 1</div>
+      <div class="adoption-num">10</div>
+      <div class="adoption-label">Projects for consistency testing</div>
+      <div class="adoption-progress"><div class="adoption-progress-fill mint" style="width:30%;"></div></div>
+      <div class="adoption-status" style="color:var(--mint);">3 of 10 completed</div>
+    </div>
+    <div class="adoption-card">
+      <div class="adoption-phase">Phase 2</div>
+      <div class="adoption-num">25</div>
+      <div class="adoption-label">Before reducing HITL oversight</div>
+      <div class="adoption-progress"><div class="adoption-progress-fill sapphire" style="width:0%;"></div></div>
+      <div class="adoption-status" style="color:var(--text-light);">Pending Phase 1</div>
+    </div>
+    <div class="adoption-card">
+      <div class="adoption-phase">Phase 3</div>
+      <div class="adoption-num">50</div>
+      <div class="adoption-label">Full production adoption</div>
+      <div class="adoption-progress"><div class="adoption-progress-fill violet" style="width:0%;"></div></div>
+      <div class="adoption-status" style="color:var(--text-light);">Pending Phase 2</div>
+    </div>
+    <div class="adoption-card">
+      <div class="adoption-phase">Phase 4</div>
+      <div class="adoption-num">&infin;</div>
+      <div class="adoption-label">No HITL &mdash; full automation</div>
+      <div class="adoption-progress"><div class="adoption-progress-fill sunset" style="width:0%;"></div></div>
+      <div class="adoption-status" style="color:var(--text-light);">End state</div>
+    </div>
+  </div>
+
+  <!-- Agent Readiness -->
+  <div class="agent-status-grid">
+    <div class="agent-status-card">
+      <div class="agent-status-icon" style="background:var(--green-bg);">&#9889;</div>
+      <div>
+        <div class="agent-status-name">QRE Design Agent</div>
+        <div class="agent-status-state state-ready">Ready &mdash; In Testing</div>
+        <div class="agent-status-meta">Saves 45-60 min/project</div>
+      </div>
+    </div>
+    <div class="agent-status-card">
+      <div class="agent-status-icon" style="background:var(--blue-bg);">&#9881;</div>
+      <div>
+        <div class="agent-status-name">Programming Agent</div>
+        <div class="agent-status-state state-ready">Ready &mdash; 65% automation</div>
+        <div class="agent-status-meta">Saves 1 hr/project</div>
+      </div>
+    </div>
+    <div class="agent-status-card">
+      <div class="agent-status-icon" style="background:var(--yellow-bg);">&#9888;</div>
+      <div>
+        <div class="agent-status-name">Survey QA Agent</div>
+        <div class="agent-status-state state-testing">In Development</div>
+        <div class="agent-status-meta">Target: 30 min/project saved</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PROJECTED SAVINGS CHART ─── -->
+  <div class="chart-container">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Projected Savings Ramp — iOOH</div>
+        <div class="chart-subtitle">Monthly cost savings as adoption scales through phases</div>
+      </div>
+      <div class="chart-legend">
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--mint)"></span> Savings</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--violet)"></span> HITL Cost</div>
+        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--text-light);border:1px dashed var(--text-light);background:transparent;"></span> Target</div>
+      </div>
+    </div>
+    <div class="chart-canvas-wrap">
+      <canvas id="savingsChart"></canvas>
+    </div>
+  </div>
+
+  <!-- ─── STRATEGIC IMPACT ─── -->
+  <div class="section-header">
+    <div class="section-icon" style="background:var(--sunset-bg);color:var(--sunset);">&#9733;</div>
+    <h2 class="section-title">What This Unlocks</h2>
+  </div>
+
+  <div class="strategy-grid">
+    <div class="strategy-card">
+      <div class="strategy-icon" style="background:var(--violet-bg);color:var(--violet);">&#128640;</div>
+      <div class="strategy-title">Light End-to-End Offering</div>
+      <div class="strategy-body">New mid-tier product where CSMs run the full pipeline without researcher involvement.</div>
+      <div class="strategy-stat">
+        <span class="strategy-stat-val" style="color:var(--violet);">New</span>
+        <span class="strategy-stat-unit">revenue stream</span>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-icon" style="background:var(--green-bg);color:var(--mint-dk);">&#10003;</div>
+      <div class="strategy-title">Amazon Proof Point</div>
+      <div class="strategy-body">No-touch account fully automated. CSMs handle it end-to-end — no researcher needed.</div>
+      <div class="strategy-stat">
+        <span class="strategy-stat-val" style="color:var(--mint);">$0</span>
+        <span class="strategy-stat-unit">researcher cost/project</span>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-icon" style="background:var(--blue-bg);color:var(--sapphire);">&#9201;</div>
+      <div class="strategy-title">Delivery Speed</div>
+      <div class="strategy-body">Post-campaign turnaround collapses from weeks to days.</div>
+      <div class="strategy-stat">
+        <span class="strategy-stat-val" style="color:var(--sapphire);">2 wks</span>
+        <span class="strategy-stat-unit">&rarr; &lt;1 week</span>
+      </div>
+    </div>
+    <div class="strategy-card">
+      <div class="strategy-icon" style="background:var(--sunset-bg);color:var(--sunset);">&#128176;</div>
+      <div class="strategy-title">Researcher Reallocation</div>
+      <div class="strategy-body">$52/hr labor freed from no-touch accounts. Redirected to clients who want interaction.</div>
+      <div class="strategy-stat">
+        <span class="strategy-stat-val" style="color:var(--sunset);">760</span>
+        <span class="strategy-stat-unit">hrs/yr freed</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <div class="footer">
+    <div><span class="live-dot" style="display:inline-block;margin-right:6px;"></span>MFour Operations &middot; Confidential</div>
+    <div>The War Room &middot; May 2026</div>
+  </div>
+
+</div>
+
+<!-- ─── CHART ─── -->
+<script>
+const ctx = document.getElementById('savingsChart').getContext('2d');
+
+// Monthly projections: Phase 1 (Jun-Aug), Phase 2 (Sep-Nov), Phase 3 (Dec-Feb)
+const months = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan \'27', 'Feb \'27'];
+const projectsPerMonth = [7, 9, 11, 18, 16, 17, 21, 21, 8];
+const savingsPerProject = 471;
+const hitlCostInitial = 65; // per project in new world
+const savingsData = projectsPerMonth.map(p => p * savingsPerProject);
+const hitlData = projectsPerMonth.map((p, i) => {
+  // HITL cost decreases as phases progress
+  if (i < 3) return p * hitlCostInitial;
+  if (i < 6) return p * 45; // reduced oversight
+  return p * 20; // minimal
+});
+const targetLine = projectsPerMonth.map(() => 152/12 * savingsPerProject);
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      {
+        label: 'Savings',
+        data: savingsData,
+        borderColor: '#22CD89', backgroundColor: 'rgba(34,205,137,0.08)',
+        borderWidth: 2.5, fill: true, tension: 0.35,
+        pointRadius: 4, pointBackgroundColor: '#22CD89',
+      },
+      {
+        label: 'HITL Cost',
+        data: hitlData,
+        borderColor: '#8882F4', backgroundColor: 'rgba(136,130,244,0.05)',
+        borderWidth: 2, fill: true, tension: 0.35,
+        pointRadius: 4, pointBackgroundColor: '#8882F4',
+      },
+      {
+        label: 'Target',
+        data: targetLine,
+        borderColor: '#64748b', borderWidth: 1.5, borderDash: [6,4],
+        pointRadius: 0, fill: false,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { intersect: false, mode: 'index' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#111827', titleFont: { size: 12, weight: '600' },
+        bodyFont: { size: 12 }, padding: 12, cornerRadius: 8,
+        borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1,
+        callbacks: {
+          label: function(context) {
+            return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false, color: 'rgba(255,255,255,0.03)' },
+        ticks: { font: { size: 11, weight: '500' }, color: '#64748b' },
+        border: { color: 'rgba(255,255,255,0.06)' }
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(255,255,255,0.03)' },
+        ticks: {
+          font: { size: 11 }, color: '#64748b',
+          callback: function(v) { return '$' + (v/1000).toFixed(0) + 'K'; }
+        },
+        border: { display: false }
+      }
+    }
+  }
+});
+</script>
+
+<script>
+function toggleDetail(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
