@@ -376,6 +376,15 @@
     display: flex; justify-content: space-between;
     padding: 3px 0;
   }
+  /* Journey detail rows inside expand */
+  .detail-expand .journey-row {
+    border-color: var(--border);
+  }
+  .journey-expand-hint {
+    font-size: 11px; color: var(--text-light); font-weight: 500;
+    transition: color 0.2s;
+  }
+  .journey-col:hover .journey-expand-hint { color: var(--sapphire); }
 </style>
 </head>
 <body>
@@ -447,107 +456,111 @@
   </div>
 
   <div class="journey-grid">
-    <div class="journey-col old">
+    <div class="journey-col old" onclick="toggleDetail('journey-old')" style="cursor:pointer;">
       <div class="journey-header old">Old World — Per Project</div>
-      <div class="journey-row">
+      <div class="journey-total" style="border-top:none;margin-top:0;padding-top:0;">
         <div>
-          <div class="journey-role">QRE Design</div>
-          <div class="journey-rate">Researcher @ $52/hr</div>
+          <span class="red" style="font-size:28px;">$536</span>
+          <div class="journey-total-sub" style="margin-top:4px;">11+ hours &middot; Multiple teams, manual handoffs</div>
         </div>
-        <div style="text-align:right;">
-          <div class="journey-time red">1 hr</div>
-          <div class="journey-cost red">$52</div>
-        </div>
+        <span class="journey-expand-hint" id="journey-old-hint">&darr; Detail</span>
       </div>
-      <div class="journey-row">
-        <div>
-          <div class="journey-role">Survey Programming</div>
-          <div class="journey-rate">SP&D @ $32/hr</div>
+      <div class="detail-expand" id="journey-old">
+        <div class="journey-row">
+          <div>
+            <div class="journey-role">QRE Design</div>
+            <div class="journey-rate">Researcher @ $52/hr</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time red">1 hr</div>
+            <div class="journey-cost red">$52</div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div class="journey-time red">1 hr</div>
-          <div class="journey-cost red">$32</div>
+        <div class="journey-row">
+          <div>
+            <div class="journey-role">Survey Programming</div>
+            <div class="journey-rate">SP&D @ $32/hr</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time red">1 hr</div>
+            <div class="journey-cost red">$32</div>
+          </div>
         </div>
-      </div>
-      <div class="journey-row">
-        <div>
-          <div class="journey-role">Survey QA</div>
-          <div class="journey-rate">Programming @ $32/hr</div>
+        <div class="journey-row">
+          <div>
+            <div class="journey-role">Survey QA</div>
+            <div class="journey-rate">Programming @ $32/hr</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time red">30 min</div>
+            <div class="journey-cost red">$16</div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div class="journey-time red">30 min</div>
-          <div class="journey-cost red">$16</div>
+        <div class="journey-row" style="border-bottom:none;">
+          <div>
+            <div class="journey-role">Report Generation</div>
+            <div class="journey-rate">Researcher (5 hrs) + Contractor (8 hrs)</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time red">8–9 hrs</div>
+            <div class="journey-cost red">$436</div>
+          </div>
         </div>
-      </div>
-      <div class="journey-row">
-        <div>
-          <div class="journey-role">Report Generation</div>
-          <div class="journey-rate">Researcher (5 hrs) + Contractor (8 hrs)</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="journey-time red">8–9 hrs</div>
-          <div class="journey-cost red">$436</div>
-        </div>
-      </div>
-      <div class="journey-total">
-        <div>
-          <span class="red">11+ hours</span>
-          <div class="journey-total-sub">Multiple teams, manual handoffs</div>
-        </div>
-        <span class="red">$536</span>
       </div>
     </div>
 
     <div class="journey-divider">&rarr;</div>
 
-    <div class="journey-col new">
+    <div class="journey-col new" onclick="toggleDetail('journey-new')" style="cursor:pointer;">
       <div class="journey-header new">New World — Per Project</div>
-      <div class="journey-row">
+      <div class="journey-total" style="border-top:none;margin-top:0;padding-top:0;">
         <div>
-          <div class="journey-role">QRE Design Agent</div>
-          <div class="journey-rate">Human review @ $52/hr</div>
+          <span class="green" style="font-size:28px;">$65</span>
+          <div class="journey-total-sub" style="margin-top:4px;">~1.25 hours &middot; Agent chain, one human touchpoint</div>
         </div>
-        <div style="text-align:right;">
-          <div class="journey-time green">15 min</div>
-          <div class="journey-cost green">$13</div>
-        </div>
+        <span class="journey-expand-hint" id="journey-new-hint">&darr; Detail</span>
       </div>
-      <div class="journey-row">
-        <div>
-          <div class="journey-role">Programming Agent</div>
-          <div class="journey-rate">Automated</div>
+      <div class="detail-expand" id="journey-new">
+        <div class="journey-row">
+          <div>
+            <div class="journey-role">QRE Design Agent</div>
+            <div class="journey-rate">Human review @ $52/hr</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time green">15 min</div>
+            <div class="journey-cost green">$13</div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div class="journey-time green">Auto</div>
-          <div class="journey-cost green">$0</div>
+        <div class="journey-row">
+          <div>
+            <div class="journey-role">Programming Agent</div>
+            <div class="journey-rate">Automated</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time green">Auto</div>
+            <div class="journey-cost green">$0</div>
+          </div>
         </div>
-      </div>
-      <div class="journey-row">
-        <div>
-          <div class="journey-role">QA Agent</div>
-          <div class="journey-rate">Automated</div>
+        <div class="journey-row">
+          <div>
+            <div class="journey-role">QA Agent</div>
+            <div class="journey-rate">Automated</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time green">Auto</div>
+            <div class="journey-cost green">$0</div>
+          </div>
         </div>
-        <div style="text-align:right;">
-          <div class="journey-time green">Auto</div>
-          <div class="journey-cost green">$0</div>
+        <div class="journey-row" style="border-bottom:none;">
+          <div>
+            <div class="journey-role">DANI Report Generation</div>
+            <div class="journey-rate">Review + story check @ $52/hr</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="journey-time green">1 hr</div>
+            <div class="journey-cost green">$52</div>
+          </div>
         </div>
-      </div>
-      <div class="journey-row">
-        <div>
-          <div class="journey-role">DANI Report Generation</div>
-          <div class="journey-rate">Review + story check @ $52/hr</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="journey-time green">1 hr</div>
-          <div class="journey-cost green">$52</div>
-        </div>
-      </div>
-      <div class="journey-total">
-        <div>
-          <span class="green">~1.25 hours</span>
-          <div class="journey-total-sub">Agent chain, one human touchpoint</div>
-        </div>
-        <span class="green">$65</span>
       </div>
     </div>
   </div>
@@ -813,6 +826,10 @@ new Chart(ctx, {
 function toggleDetail(id) {
   const el = document.getElementById(id);
   el.classList.toggle('open');
+  const hint = document.getElementById(id + '-hint');
+  if (hint) {
+    hint.innerHTML = el.classList.contains('open') ? '&uarr; Hide' : '&darr; Detail';
+  }
 }
 </script>
 
