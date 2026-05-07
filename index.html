@@ -60,6 +60,14 @@
   }
   .top-nav-title { color: #ffffff; font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
   .top-nav-subtitle { color: rgba(255,255,255,0.6); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .top-nav-right { display: flex; align-items: center; gap: 16px; }
+  .top-nav-badges { display: flex; gap: 8px; }
+  .nav-badge {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .badge-violet { background: rgba(136,130,244,0.2); color: #b8b4ff; }
+  .badge-mint { background: rgba(34,205,137,0.2); color: #5fe8a8; }
   .top-nav-live {
     display: flex; align-items: center; gap: 6px;
     font-size: 11px; color: var(--mint); font-weight: 600;
@@ -382,8 +390,14 @@
       <div class="top-nav-subtitle">MFour Operations Intelligence</div>
     </div>
   </div>
-  <div class="top-nav-live">
-    <span class="live-dot"></span> <span style="text-transform:none;">iOOH Automation &middot; May 2026</span>
+  <div class="top-nav-right">
+    <div class="top-nav-badges">
+      <span class="nav-badge badge-violet">DANI + Advertising</span>
+      <span class="nav-badge badge-mint">Agents + Measurement</span>
+    </div>
+    <div class="top-nav-live">
+      <span class="live-dot"></span> <span style="text-transform:none;">iOOH Automation &middot; May 2026</span>
+    </div>
   </div>
 </nav>
 
