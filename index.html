@@ -24,8 +24,8 @@
     --border: rgba(255,255,255,0.06);
     --border-accent: rgba(255,255,255,0.1);
     --text: #f1f5f9;
-    --text-muted: #94a3b8;
-    --text-light: #64748b;
+    --text-muted: #b0bec5;
+    --text-light: #8a94a3;
     --green-bg: rgba(34,205,137,0.1);
     --red-bg: rgba(231,96,105,0.1);
     --yellow-bg: rgba(242,207,23,0.08);
@@ -79,7 +79,7 @@
   /* ── Hero ── */
   .hero { margin-bottom: 48px; text-align: center; }
   .hero-eyebrow {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    font-size: 11px; font-weight: 700;
     letter-spacing: 0.14em; color: var(--mint); margin-bottom: 16px;
   }
   .hero-title {
@@ -113,7 +113,7 @@
   .big-card.card-violet::before { background: linear-gradient(90deg, var(--violet), #6b63e0); }
   .big-card-label {
     font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.12em; color: var(--text-light); margin-bottom: 12px;
+    letter-spacing: 0.12em; color: var(--text-muted); margin-bottom: 12px;
   }
   .big-card-value {
     font-size: 48px; font-weight: 900; letter-spacing: -0.04em;
@@ -173,7 +173,7 @@
   }
   .journey-row:last-child { border-bottom: none; }
   .journey-role { color: var(--text-muted); }
-  .journey-rate { font-size: 10px; color: var(--text-light); }
+  .journey-rate { font-size: 10px; color: var(--text-muted); }
   .journey-time { font-weight: 700; }
   .journey-cost { font-weight: 700; font-size: 12px; }
   .journey-time.red, .journey-cost.red { color: var(--coral); }
@@ -185,7 +185,7 @@
   }
   .journey-total .red { color: var(--coral); }
   .journey-total .green { color: var(--mint); }
-  .journey-total-sub { font-size: 11px; color: var(--text-light); font-weight: 500; }
+  .journey-total-sub { font-size: 11px; color: var(--text-muted); font-weight: 500; }
 
   /* ── Pipeline ── */
   .pipeline-track {
@@ -221,7 +221,7 @@
   .pipeline-node.human .pipeline-label { color: var(--mustard); }
   .pipeline-node.dani .pipeline-label { color: var(--violet); }
   .pipeline-name { font-size: 13px; font-weight: 700; color: white; }
-  .pipeline-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .pipeline-time { font-size: 11px; color: var(--text); opacity: 0.7; margin-top: 4px; }
   .pipeline-note {
     font-size: 12px; color: var(--text-light); margin-top: 16px;
     text-align: center;
@@ -248,13 +248,13 @@
   }
   .adoption-phase {
     font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 8px;
+    letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px;
   }
   .adoption-num {
     font-size: 36px; font-weight: 900; color: white;
     letter-spacing: -0.03em; line-height: 1;
   }
-  .adoption-label { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+  .adoption-label { font-size: 12px; color: var(--text); opacity: 0.75; margin-top: 6px; }
   .adoption-progress {
     margin-top: 14px; height: 4px; background: rgba(255,255,255,0.06);
     border-radius: 2px; overflow: hidden;
@@ -291,7 +291,7 @@
   .state-ready { color: var(--mint); }
   .state-testing { color: var(--mustard); }
   .state-building { color: var(--text-light); }
-  .agent-status-meta { font-size: 10px; color: var(--text-light); margin-top: 2px; }
+  .agent-status-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
   /* ── Chart ── */
   .chart-container {
@@ -389,7 +389,7 @@
     </div>
   </div>
   <div class="top-nav-live">
-    <span class="live-dot"></span> iOOH Automation &middot; May 2026
+    <span class="live-dot"></span> <span style="text-transform:none;">iOOH Automation &middot; May 2026</span>
   </div>
 </nav>
 
