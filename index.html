@@ -422,24 +422,14 @@
       </div>
     </div>
     <div class="big-card card-violet">
-      <div class="big-card-label">Annual Savings (152 projects)</div>
-      <div class="big-card-value violet">$71.6K</div>
-      <div class="big-card-sub">$471 &times; 152 iOOH projects/yr</div>
-      <div class="big-card-detail" onclick="toggleDetail('detail2')">See monthly volume &darr;</div>
+      <div class="big-card-label">Annual Savings (148 projects)</div>
+      <div class="big-card-value violet">$69.7K</div>
+      <div class="big-card-sub">$471 &times; 148 iOOH projects/yr avg</div>
+      <div class="big-card-detail" onclick="toggleDetail('detail2')">See yearly volume &darr;</div>
       <div class="detail-expand" id="detail2">
-        <div class="detail-row"><span>Jan</span><span>21 projects</span></div>
-        <div class="detail-row"><span>Feb</span><span>8</span></div>
-        <div class="detail-row"><span>Mar</span><span>7</span></div>
-        <div class="detail-row"><span>Apr</span><span>7</span></div>
-        <div class="detail-row"><span>May</span><span>10</span></div>
-        <div class="detail-row"><span>Jun</span><span>7</span></div>
-        <div class="detail-row"><span>Jul</span><span>9</span></div>
-        <div class="detail-row"><span>Aug</span><span>11</span></div>
-        <div class="detail-row"><span>Sep</span><span>18</span></div>
-        <div class="detail-row"><span>Oct</span><span>16</span></div>
-        <div class="detail-row"><span>Nov</span><span>17</span></div>
-        <div class="detail-row"><span>Dec</span><span>21</span></div>
-        <div class="detail-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span><strong>Total</strong></span><span><strong>152</strong></span></div>
+        <div class="detail-row"><span>2024</span><span>152 projects</span></div>
+        <div class="detail-row"><span>2025</span><span>144 projects</span></div>
+        <div class="detail-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span><strong>Avg</strong></span><span><strong>148 projects/yr</strong></span></div>
       </div>
     </div>
     <div class="big-card card-sunset">
@@ -753,7 +743,7 @@ const hitlData = projectsPerMonth.map((p, i) => {
   if (i < 6) return p * 45; // reduced oversight
   return p * 20; // minimal
 });
-const targetLine = projectsPerMonth.map(() => 152/12 * savingsPerProject);
+const targetLine = projectsPerMonth.map(() => 148/12 * savingsPerProject);
 
 new Chart(ctx, {
   type: 'line',
