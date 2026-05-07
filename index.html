@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The War Room — MFour Operations Intelligence</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
@@ -292,20 +291,6 @@
   .state-building { color: var(--text-light); }
   .agent-status-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
-  /* ── Chart ── */
-  .chart-container {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 28px; margin-top: 24px;
-  }
-  .chart-header {
-    display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;
-  }
-  .chart-title { font-size: 15px; font-weight: 700; color: var(--midnight); }
-  .chart-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-  .chart-legend { display: flex; gap: 14px; }
-  .chart-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); font-weight: 500; }
-  .chart-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-  .chart-canvas-wrap { height: 260px; position: relative; }
 
   /* ── Strategic Cards ── */
   .strategy-grid {
@@ -431,14 +416,14 @@
       </div>
     </div>
     <div class="big-card card-violet">
-      <div class="big-card-label">Annual Savings (148 projects)</div>
-      <div class="big-card-value violet">$69.7K</div>
-      <div class="big-card-sub">$471 &times; 148 iOOH projects/yr avg</div>
+      <div class="big-card-label">Annual Savings (150 projects)</div>
+      <div class="big-card-value violet">$70.7K</div>
+      <div class="big-card-sub">$471 &times; 150 iOOH projects/yr avg</div>
       <div class="big-card-detail" onclick="toggleDetail('detail2')">See yearly volume &darr;</div>
       <div class="detail-expand" id="detail2">
         <div class="detail-row"><span>2024</span><span>152 projects</span></div>
-        <div class="detail-row"><span>2025</span><span>144 projects</span></div>
-        <div class="detail-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span><strong>Avg</strong></span><span><strong>148 projects/yr</strong></span></div>
+        <div class="detail-row"><span>2025</span><span>148 projects</span></div>
+        <div class="detail-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px;"><span><strong>Avg</strong></span><span><strong>150 projects/yr</strong></span></div>
       </div>
     </div>
     <div class="big-card card-sunset">
@@ -669,23 +654,6 @@
     </div>
   </div>
 
-  <!-- ─── PROJECTED SAVINGS CHART ─── -->
-  <div class="chart-container">
-    <div class="chart-header">
-      <div>
-        <div class="chart-title">Projected Savings Ramp — iOOH</div>
-        <div class="chart-subtitle">Monthly cost savings as adoption scales through phases</div>
-      </div>
-      <div class="chart-legend">
-        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--mint)"></span> Savings</div>
-        <div class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--violet)"></span> HITL Cost</div>
-        <div class="chart-legend-item"><span class="chart-legend-dot" style="border:1px dashed #8a94a3;background:transparent;"></span> Target</div>
-      </div>
-    </div>
-    <div class="chart-canvas-wrap">
-      <canvas id="savingsChart"></canvas>
-    </div>
-  </div>
 
   <!-- ─── STRATEGIC IMPACT ─── -->
   <div class="section-header">
@@ -740,87 +708,6 @@
 
 </div>
 
-<!-- ─── CHART ─── -->
-<script>
-const ctx = document.getElementById('savingsChart').getContext('2d');
-
-// Monthly projections: Phase 1 (Jun-Aug), Phase 2 (Sep-Nov), Phase 3 (Dec-Feb)
-const months = ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan \'27', 'Feb \'27'];
-const projectsPerMonth = [7, 9, 11, 18, 16, 17, 21, 21, 8];
-const savingsPerProject = 471;
-const hitlCostInitial = 65; // per project in new world
-const savingsData = projectsPerMonth.map(p => p * savingsPerProject);
-const hitlData = projectsPerMonth.map((p, i) => {
-  // HITL cost decreases as phases progress
-  if (i < 3) return p * hitlCostInitial;
-  if (i < 6) return p * 45; // reduced oversight
-  return p * 20; // minimal
-});
-const targetLine = projectsPerMonth.map(() => 148/12 * savingsPerProject);
-
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: months,
-    datasets: [
-      {
-        label: 'Savings',
-        data: savingsData,
-        borderColor: '#22CD89', backgroundColor: 'rgba(34,205,137,0.08)',
-        borderWidth: 2.5, fill: true, tension: 0.35,
-        pointRadius: 4, pointBackgroundColor: '#22CD89',
-      },
-      {
-        label: 'HITL Cost',
-        data: hitlData,
-        borderColor: '#8882F4', backgroundColor: 'rgba(136,130,244,0.05)',
-        borderWidth: 2, fill: true, tension: 0.35,
-        pointRadius: 4, pointBackgroundColor: '#8882F4',
-      },
-      {
-        label: 'Target',
-        data: targetLine,
-        borderColor: '#8a94a3', borderWidth: 1.5, borderDash: [6,4],
-        pointRadius: 0, fill: false,
-      }
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    interaction: { intersect: false, mode: 'index' },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: '#003470', titleFont: { size: 12, weight: '600' },
-        bodyFont: { size: 12 }, padding: 12, cornerRadius: 8,
-        titleColor: '#ffffff', bodyColor: 'rgba(255,255,255,0.9)',
-        borderColor: 'rgba(0,52,112,0.2)', borderWidth: 1,
-        callbacks: {
-          label: function(context) {
-            return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
-          }
-        }
-      }
-    },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: { font: { size: 11, weight: '500' }, color: '#5b6472' },
-        border: { color: '#e5e7eb' }
-      },
-      y: {
-        beginAtZero: true,
-        grid: { color: '#f0f1f3' },
-        ticks: {
-          font: { size: 11 }, color: '#5b6472',
-          callback: function(v) { return '$' + (v/1000).toFixed(0) + 'K'; }
-        },
-        border: { display: false }
-      }
-    }
-  }
-});
-</script>
 
 <script>
 function toggleDetail(id) {
